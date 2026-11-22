@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TW War Room" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Devilicious Strategy Suite — audited build</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --surface: #131c31;
+      --surface-2: #1b2640;
+      --border: #2a3958;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --danger: #ef4444;
+      --success: #10b981;
+      --info: #3b82f6;
+      --purple: #8b5cf6;
+      --radius: 12px;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.45;
+      padding-bottom: 84px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 17, 32, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #0b1120;
+      font-size: 16px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .brand span {
+      display: block;
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .server-clock {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .server-clock .time {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .server-clock .label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--surface-2);
+      color: var(--accent);
+      border: 1px solid var(--border);
+    }
+
+    .badge.danger {
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.4);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .badge.success {
+      color: #6ee7b7;
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.15);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 9px 10px;
+      font-family: var(--font);
+      font-size: 13px;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 82px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.05s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0b1120;
+      width: 100%;
+    }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 11px;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .subtabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+
+    .subtabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .subtab {
+      white-space: nowrap;
+      padding: 7px 12px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .subtab.active {
+      background: var(--accent);
+      color: #0b1120;
+      border-color: var(--accent);
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      background: rgba(19, 28, 49, 0.97);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+    }
+
+    .nav-item {
+      background: none;
+      border: none;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+    }
+
+    .nav-icon {
+      font-size: 17px;
+    }
+
+    .alert-box {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+
+    .alert-box.warn {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: rgba(245, 158, 11, 0.12);
+      color: #fde68a;
+    }
+
+    .alert-box.danger {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.12);
+      color: #fecaca;
+    }
+
+    .alert-box.success {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: rgba(16, 185, 129, 0.12);
+      color: #a7f3d0;
+    }
+
+    .cmd-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cmd-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .cmd-card.noble {
+      border-left-color: #eab308;
+    }
+
+    .cmd-card.clear {
+      border-left-color: #ef4444;
+    }
+
+    .cmd-card.fake {
+      border-left-color: #3b82f6;
+    }
+
+    .cmd-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .cmd-type {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cmd-countdown {
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--success);
+    }
+
+    .cmd-route {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .cmd-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .cmd-actions {
+      margin-top: 8px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .meter-bar {
+      width: 100%;
+      height: 10px;
+      background: var(--bg);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin: 6px 0;
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--danger), var(--accent), var(--success));
+      transition: width 0.3s ease;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    th, td {
+      padding: 7px 6px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+    }
+
+    .checkbox-row label {
+      margin: 0;
+      text-transform: none;
+      font-size: 12px;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">TW</div>
+      <div>
+        <h1>AI War Room</h1>
+        <span>Devilicious Suite + Strategic Engine</span>
+      </div>
+    </div>
+    <div class="server-clock">
+      <div class="time" id="liveClock">00:00:00</div>
+      <div class="label">Server / Local Time</div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- SECTION 1: WORLD CONFIG & LIVE API -->
+    <div id="section-world" class="tab-panel active">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">World & Speed Configuration</h2>
+          <span class="badge" id="worldStatusBadge">Preset Loaded</span>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>Server Domain</label>
+            <select id="serverDomain">
+              <option value="tribalwars.nl">tribalwars.nl (.nl)</option>
+              <option value="tribalwars.net">tribalwars.net (.net)</option>
+              <option value="tribalwars.co.uk">tribalwars.co.uk (.uk)</option>
+              <option value="tribalwars.us">tribalwars.us (.us)</option>
+              <option value="tribalwars.com.br">tribalwars.com.br (.br)</option>
+              <option value="tribalwars.com.pt">tribalwars.com.pt (.pt)</option>
+              <option value="tribals.it">tribals.it (.it)</option>
+              <option value="guerretribale.fr">guerretribale.fr (.fr)</option>
+            </select>
+          </div>
+          <div>
+            <label>World Code (e.g. nl105)</label>
+            <input type="text" id="worldCode" value="nl105" placeholder="nl105" />
+          </div>
+        </div>
+
+        <div class="row-actions">
+          <button class="btn btn-secondary btn-sm" onclick="fetchWorldConfig()">Sync Live World API</button>
+          <button class="btn btn-secondary btn-sm" onclick="applyPreset(1.5, 0.667)">Speed 1.5x</button>
+          <button class="btn btn-secondary btn-sm" onclick="applyPreset(2.0, 0.5)">Speed 2.0x</button>
+        </div>
+
+        <div class="grid-3" style="margin-top: 12px;">
+          <div>
+            <label>World Speed</label>
+            <input type="number" step="0.1" id="worldSpeed" value="1.5" />
+          </div>
+          <div>
+            <label>Unit Speed</label>
+            <input type="number" step="0.01" id="unitSpeed" value="0.67" />
+          </div>
+          <div>
+            <label>Min Gap (sec)</label>
+            <input type="number" id="minSendGap" value="2" />
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: 10px;">
+          <div>
+            <label>Night Bonus Start (0-23)</label>
+            <input type="number" min="0" max="23" id="nbStart" value="0" />
+          </div>
+          <div>
+            <label>Night Bonus End (0-23)</label>
+            <input type="number" min="0" max="23" id="nbEnd" value="8" />
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="avoidNightBonus" checked />
+          <label for="avoidNightBonus">Warn / Flag arrivals landing inside Night Bonus</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Unit Base Minutes / Field</h2>
+          <span class="badge">Standard TW</span>
+        </div>
+        <div class="grid-3">
+          <div><label>Spear</label><input type="number" id="u_spear" value="18" /></div>
+          <div><label>Sword</label><input type="number" id="u_sword" value="22" /></div>
+          <div><label>Axe</label><input type="number" id="u_axe" value="18" /></div>
+          <div><label>Scout</label><input type="number" id="u_spy" value="9" /></div>
+          <div><label>Light Cav</label><input type="number" id="u_light" value="10" /></div>
+          <div><label>Heavy Cav</label><input type="number" id="u_heavy" value="11" /></div>
+          <div><label>Ram</label><input type="number" id="u_ram" value="30" /></div>
+          <div><label>Catapult</label><input type="number" id="u_catapult" value="30" /></div>
+          <div><label>Noble</label><input type="number" id="u_snob" value="35" /></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">iPhone / Android Home Screen Setup</h2>
+          <span class="badge success">PWA Ready</span>
+        </div>
+        <p style="font-size: 12px; color: var(--muted); margin: 0;">
+          To run this as a standalone full-screen app on iPhone: host this <code>index.html</code> file over HTTPS (GitHub Pages / Vercel), open it in <strong>Safari</strong>, tap <strong>Share → Add to Home Screen</strong>.
+        </p>
+      </div>
+    </div>
+
+    <!-- SECTION 2: DEVILICIOUS 5-MODE PLANNER -->
+    <div id="section-planner" class="tab-panel">
+      <div class="subtabs">
+        <button class="subtab active" onclick="switchPlannerMode('simple', this)">1. Simple</button>
+        <button class="subtab" onclick="switchPlannerMode('advanced', this)">2. Advanced</button>
+        <button class="subtab" onclick="switchPlannerMode('edelspam', this)">3. Edelspam</button>
+        <button class="subtab" onclick="switchPlannerMode('cmdgen', this)">4. Cmd Gen</button>
+        <button class="subtab" onclick="switchPlannerMode('advcmd', this)">5. Clear + Fake</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title" id="plannerModeTitle">Simple Planner</h2>
+          <button class="btn btn-secondary btn-sm" onclick="loadSampleOp()">Load Sample Op</button>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>Default Unit</label>
+            <select id="planUnit">
+              <option value="ram">Ram / Catapult (30m)</option>
+              <option value="snob">Noble / Edel (35m)</option>
+              <option value="axe">Axe / Spear (18m)</option>
+              <option value="light">Light Cavalry (10m)</option>
+              <option value="heavy">Heavy Cavalry (11m)</option>
+              <option value="sword">Sword (22m)</option>
+              <option value="spy">Scout (9m)</option>
+            </select>
+          </div>
+          <div>
+            <label>Target Arrival Time</label>
+            <input type="datetime-local" step="1" id="arrivalTime" />
+          </div>
+        </div>
+
+        <!-- Mode-specific controls -->
+        <div id="mode-advanced-box" style="display:none; margin-top: 10px;">
+          <div class="grid-2">
+            <div>
+              <label>Earliest Launch Allowed</label>
+              <input type="datetime-local" step="1" id="earliestLaunch" />
+            </div>
+            <div>
+              <label>Assignment Priority</label>
+              <select id="assignOrder">
+                <option value="closest">Closest Sources First</option>
+                <option value="furthest">Furthest Sources First</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="mode-edelspam-box" style="display:none; margin-top: 10px;">
+          <div class="alert-box warn">
+            <strong>Edelspam Format:</strong> Paste lines like <code>3 nobles in 502|488</code> or <code>502|488 3</code> in Sources, and <code>510|492 2</code> (target + noble count) in Targets.
+          </div>
+        </div>
+
+        <div id="mode-cmdgen-box" style="display:none; margin-top: 10px;">
+          <div class="alert-box">
+            <strong>Batch Command Syntax:</strong> Enter target lines as <code>x|y,attack_count,YYYY-MM-DD HH:MM:SS</code> (or leave simple coords to use global arrival time).
+          </div>
+        </div>
+
+        <div id="mode-advcmd-box" style="display:none; margin-top: 10px;">
+          <div class="grid-3">
+            <div>
+              <label>Clears / Target</label>
+              <input type="number" id="clearsPerTarget" value="1" min="0" />
+            </div>
+            <div>
+              <label>Fakes / Target</label>
+              <input type="number" id="fakesPerTarget" value="3" min="0" />
+            </div>
+            <div>
+              <label>Fake Unit</label>
+              <select id="fakeUnit">
+                <option value="ram">Ram Fake (30m)</option>
+                <option value="spy">Scout Fake (9m)</option>
+                <option value="catapult">Catapult Fake (30m)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label>Source Villages (Your Off / Noble Villages)</label>
+            <span id="dupBadge" class="badge">0 Duplicates</span>
+          </div>
+          <textarea id="sourceCoords" oninput="checkDuplicates()" placeholder="500|500&#10;501|503&#10;504|498"></textarea>
+          <div id="dupWarning" class="alert-box danger" style="display:none;"></div>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <label>Target Villages (Enemy Coords)</label>
+          <textarea id="targetCoords" placeholder="512|508&#10;514|510"></textarea>
+        </div>
+
+        <div class="alert-box warn">
+          Schedules are estimates for manual review. This tool does not randomise timings, click game controls, or send commands.
+        </div>
+
+        <div class="row-actions">
+          <button class="btn btn-primary" onclick="generatePlan()">Generate Launch Schedule</button>
+        </div>
+      </div>
+
+      <!-- GENERATED SCHEDULE OUTPUT -->
+      <div class="card" id="scheduleCard" style="display:none;">
+        <div class="card-header">
+          <h2 class="card-title">Launch Queue (<span id="cmdCount">0</span>)</h2>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-secondary btn-sm" onclick="copyBBCode()">Copy BB-Code</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportPlainText()">Copy Text</button>
+          </div>
+        </div>
+
+        <div id="stealthSummary" class="alert-box" style="margin-bottom: 10px;"></div>
+        <div class="cmd-list" id="cmdList"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: AI STRATEGIC WAR ROOM -->
+    <div id="section-warroom" class="tab-panel">
+      <div class="subtabs">
+        <button class="subtab active" onclick="switchWarTab('wallsim', this)">Wall & Attrition Sim</button>
+        <button class="subtab" onclick="switchWarTab('clusters', this)">Target Cluster Scorer</button>
+        <button class="subtab" onclick="switchWarTab('snipe', this)">Snipe & Backtime</button>
+      </div>
+
+      <!-- 3A: MULTI-WAVE WALL DEGRADATION & COMBAT SIMULATOR -->
+      <div id="wartab-wallsim" class="war-subpanel">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Multi-Wave Wall & Stack Attrition</h2>
+            <span class="badge">AI Combat Model</span>
+          </div>
+          <p style="font-size:12px; color:var(--muted); margin-top:0;">
+            Simulates sequential full nukes hitting a stacked village, modeling pre-combat ram wall drop and Lanchester attrition per wave.
+          </p>
+
+          <div class="grid-2">
+            <div>
+              <label>Incoming Full Nukes</label>
+              <input type="number" id="simWaves" value="5" min="1" max="25" />
+            </div>
+            <div>
+              <label>Initial Wall Level (0-20)</label>
+              <input type="number" id="simWall" value="20" min="0" max="20" />
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top:10px;">
+            <div>
+              <label>Def Spears</label>
+              <input type="number" id="simSpear" value="15000" />
+            </div>
+            <div>
+              <label>Def Swords</label>
+              <input type="number" id="simSword" value="15000" />
+            </div>
+            <div>
+              <label>Def Heavy Cav</label>
+              <input type="number" id="simHeavy" value="2500" />
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:10px;">
+            <div>
+              <label>Nuke Template</label>
+              <select id="simNukeType">
+                <option value="standard">Standard (6500 Axe, 3000 LC, 300 Ram)</option>
+                <option value="wallbreaker">Wallbreaker (5500 Axe, 2800 LC, 500 Ram)</option>
+                <option value="heavyoff">Heavy Off (7500 Axe, 3200 LC, 250 Ram)</option>
+              </select>
+            </div>
+            <div>
+              <label>Night Bonus Active?</label>
+              <select id="simNightBonus">
+                <option value="1">No (100% Def)</option>
+                <option value="2">Yes (200% Def)</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" style="margin-top:12px;" onclick="runWallSimulation()">Simulate Multi-Wave Breach</button>
+
+          <div id="simResults" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <!-- 3B: TARGET CLUSTER & LEVERAGE SCORER -->
+      <div id="wartab-clusters" class="war-subpanel" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Strategic Target Leverage Scorer</h2>
+            <span class="badge">Graph Centrality</span>
+          </div>
+          <p style="font-size:12px; color:var(--muted); margin-top:0;">
+            Ranks enemy coordinates by cluster density and frontline exposure to identify anchor villages whose capture collapses local support networks.
+          </p>
+          <label>Enemy Target Cluster Coords</label>
+          <textarea id="clusterInput" placeholder="510|510&#10;511|510&#10;512|511&#10;518|522&#10;511|509"></textarea>
+          <button class="btn btn-primary" style="margin-top:10px;" onclick="scoreTargetClusters()">Rank Strategic Priority</button>
+          <div id="clusterResults" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <!-- 3C: SNIPE & BACKTIME CALCULATOR -->
+      <div id="wartab-snipe" class="war-subpanel" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Cancel-Snipe & Backtime Calculator</h2>
+            <span class="badge">MS Precision</span>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <label>Attacker Origin Coord</label>
+              <input type="text" id="btOrigin" value="500|500" />
+            </div>
+            <div>
+              <label>Your Target Coord</label>
+              <input type="text" id="btTarget" value="506|504" />
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top:10px;">
+            <div>
+              <label>Enemy Slowest Unit</label>
+              <select id="btEnemyUnit">
+                <option value="snob">Noble (35m)</option>
+                <option value="ram">Ram / Cat (30m)</option>
+                <option value="sword">Sword (22m)</option>
+                <option value="axe">Axe / Spear (18m)</option>
+                <option value="heavy">Heavy Cav (11m)</option>
+                <option value="light">Light Cav (10m)</option>
+              </select>
+            </div>
+            <div>
+              <label>Enemy Impact Timestamp</label>
+              <input type="datetime-local" step="1" id="btImpactTime" />
+            </div>
+          </div>
+
+          <button class="btn btn-primary" style="margin-top:12px;" onclick="calcBacktimeAndSnipe()">Compute Backtime & Cancel Window</button>
+          <div id="btResults" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: UTILITIES (COORD EXTRACTOR & BB-CODE) -->
+    <div id="section-utils" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Coord Extractor & Cleaner</h2>
+          <span class="badge">Regex Parser</span>
+        </div>
+        <label>Paste Raw Forum Post, Scout Report, or Player Profile</label>
+        <textarea id="rawExtractText" placeholder="Paste any messy text containing 123|456 coordinates..."></textarea>
+        <div class="row-actions">
+          <button class="btn btn-primary btn-sm" onclick="extractCoords()">Extract Unique Coords</button>
+          <button class="btn btn-secondary btn-sm" onclick="sendExtractedToTargets()">Send to Targets</button>
+          <button class="btn btn-secondary btn-sm" onclick="sendExtractedToSources()">Send to Sources</button>
+        </div>
+        <textarea id="extractedOutput" style="margin-top:10px;" readonly placeholder="Cleaned coordinates appear here..."></textarea>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">BB-Code & Off-Pack Exporter</h2>
+          <span class="badge">Tribal Forum Ready</span>
+        </div>
+        <textarea id="bbExportOutput" style="min-height:140px;" readonly placeholder="Generate a plan first to populate Tribal Wars BB-Code table..."></textarea>
+        <button class="btn btn-secondary" style="margin-top:10px;" onclick="copyBBCode()">Copy BB-Code to Clipboard</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchMainSection('world', this)">
+      <span class="nav-icon">🌍</span>
+      <span>World</span>
+    </button>
+    <button class="nav-item" onclick="switchMainSection('planner', this)">
+      <span class="nav-icon">⚔️</span>
+      <span>Planner</span>
+    </button>
+    <button class="nav-item" onclick="switchMainSection('warroom', this)">
+      <span class="nav-icon">🧠</span>
+      <span>AI War Room</span>
+    </button>
+    <button class="nav-item" onclick="switchMainSection('utils', this)">
+      <span class="nav-icon">🛠️</span>
+      <span>Utilities</span>
+    </button>
+  </nav>
+
+  <script>
+    // Audited build: preserves the original interface and five planner modes.
+    // All command schedules are for manual review; no in-game actions are automated.
+    let currentPlannerMode = 'simple';
+    let generatedCommands = [];
+
+    // Live Clock
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('liveClock').textContent = now.toTimeString().split(' ')[0];
+    }, 1000);
+
+    // Initialize default datetime inputs to +4 hours from now
+    function initDefaultDates() {
+      const future = new Date(Date.now() + 4 * 3600 * 1000);
+      const iso = new Date(future.getTime() - future.getTimezoneOffset() * 60000).toISOString().slice(0, 19);
+      document.getElementById('arrivalTime').value = iso;
+      document.getElementById('btImpactTime').value = iso;
+
+      const nowIso = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 19);
+      document.getElementById('earliestLaunch').value = nowIso;
+    }
+    initDefaultDates();
+
+    // Navigation
+    function switchMainSection(section, btn) {
+      document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById('section-' + section).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    function switchPlannerMode(mode, btn) {
+      currentPlannerMode = mode;
+      document.querySelectorAll('#section-planner .subtab').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+
+      const titles = {
+        simple: 'Simple Planner',
+        advanced: 'Advanced Planner (Constraints & Ordering)',
+        edelspam: 'Edelspam (Noble Spam Matcher)',
+        cmdgen: 'Batch Command Generator',
+        advcmd: 'Advanced Command Generator (Clears + Fakes)'
+      };
+      document.getElementById('plannerModeTitle').textContent = titles[mode];
+
+      document.getElementById('mode-advanced-box').style.display = mode === 'advanced' ? 'block' : 'none';
+      document.getElementById('mode-edelspam-box').style.display = mode === 'edelspam' ? 'block' : 'none';
+      document.getElementById('mode-cmdgen-box').style.display = mode === 'cmdgen' ? 'block' : 'none';
+      document.getElementById('mode-advcmd-box').style.display = mode === 'advcmd' ? 'block' : 'none';
+
+      if (mode === 'edelspam') {
+        document.getElementById('planUnit').value = 'snob';
+      }
+    }
+
+    function switchWarTab(tab, btn) {
+      document.querySelectorAll('#section-warroom .subtab').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.war-subpanel').forEach(el => el.style.display = 'none');
+      btn.classList.add('active');
+      document.getElementById('wartab-' + tab).style.display = 'block';
+    }
+
+    // World Presets & Live Sync
+    function applyPreset(wSpeed, uSpeed) {
+      document.getElementById('worldSpeed').value = wSpeed;
+      document.getElementById('unitSpeed').value = uSpeed;
+      document.getElementById('worldStatusBadge').textContent = `Speed ${wSpeed}x Applied`;
+    }
+
+    async function fetchWorldConfig() {
+      const domain = document.getElementById('serverDomain').value;
+      const world = document.getElementById('worldCode').value.trim().toLowerCase();
+      const badge = document.getElementById('worldStatusBadge');
+      badge.textContent = 'Syncing...';
+      if (!/^[a-z]{2,3}\d{1,4}$/i.test(world)) { badge.textContent = 'Invalid world code'; badge.className = 'badge danger'; return; }
+
+      try {
+        const url = `https://${world}.${domain}/interface.php?func=get_config`;
+        const res = await fetch(url);
+        const xmlText = await res.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(xmlText, 'text/xml');
+        const speed = xml.querySelector('speed')?.textContent;
+        const unitSpeed = xml.querySelector('unit_speed')?.textContent;
+        const parsedSpeed = Number(speed);
+        const parsedUnitSpeed = Number(unitSpeed);
+        if (Number.isFinite(parsedSpeed) && parsedSpeed > 0 && Number.isFinite(parsedUnitSpeed) && parsedUnitSpeed > 0) {
+          document.getElementById('worldSpeed').value = parsedSpeed;
+          document.getElementById('unitSpeed').value = parsedUnitSpeed;
+          badge.textContent = `Live: ${world.toUpperCase()} (${speed}x)`;
+          badge.className = 'badge success';
+        } else {
+          throw new Error('Invalid XML');
+        }
+      } catch (e) {
+        badge.textContent = 'CORS Blocked - Using Manual Config';
+        badge.className = 'badge danger';
+      }
+    }
+
+    // Parse local wall-clock timestamps without silently normalising invalid dates.
+    function parseLocalDateTime(value) {
+      if (typeof value !== 'string') return new Date(NaN);
+      const m = value.trim().match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/);
+      if (!m) return new Date(NaN);
+      const [, ys, mos, ds, hs, mis, ss = '0'] = m;
+      const parts = [Number(ys), Number(mos), Number(ds), Number(hs), Number(mis), Number(ss)];
+      const [y, mo, d, h, mi, sec] = parts;
+      if (mo < 1 || mo > 12 || d < 1 || d > 31 || h > 23 || mi > 59 || sec > 59) return new Date(NaN);
+      const result = new Date(y, mo - 1, d, h, mi, sec, 0);
+      if (result.getFullYear() !== y || result.getMonth() !== mo - 1 || result.getDate() !== d ||
+          result.getHours() !== h || result.getMinutes() !== mi || result.getSeconds() !== sec) return new Date(NaN);
+      return result;
+    }
+
+    // Coordinate Helpers
+    function parseCoord(value) {
+      if (typeof value !== 'string') return null;
+      // Accept a coordinate token inside labelled lines, but never a partial
+      // match inside a longer number or a signed/invalid coordinate.
+      const m = value.match(/(?<![\d+\-])(\d{1,3})\|(\d{1,3})(?!\d)/);
+      if (!m) return null;
+      const x = Number(m[1]);
+      const y = Number(m[2]);
+      if (!Number.isInteger(x) || !Number.isInteger(y) || x < 0 || x > 999 || y < 0 || y > 999) return null;
+      return { x, y, str: `${m[1]}|${m[2]}` };
+    }
+
+    function calcDistance(c1, c2) {
+      return Math.hypot(c2.x - c1.x, c2.y - c1.y);
+    }
+
+    function getUnitBaseMinutes(unitKey) {
+      const el = document.getElementById('u_' + unitKey);
+      return el ? parseFloat(el.value) : 30;
+    }
+
+    function calcTravelSeconds(c1, c2, unitKey) {
+      const dist = calcDistance(c1, c2);
+      const baseMin = getUnitBaseMinutes(unitKey);
+      const wSpeed = Number(document.getElementById('worldSpeed').value);
+      const uSpeed = Number(document.getElementById('unitSpeed').value);
+      if (![dist, baseMin, wSpeed, uSpeed].every(Number.isFinite) || baseMin <= 0 || wSpeed <= 0 || uSpeed <= 0) {
+        throw new Error('Travel calculation requires positive, valid unit and world speeds.');
+      }
+      return Math.round(dist * baseMin * 60 / (wSpeed * uSpeed));
+    }
+
+    function formatDuration(sec) {
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function formatTimestamp(date) {
+      const pad = n => String(n).padStart(2, '0');
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    function isNightBonus(date) {
+      const h = date.getHours();
+      const start = parseInt(document.getElementById('nbStart').value, 10);
+      const end = parseInt(document.getElementById('nbEnd').value, 10);
+      if (start < end) return h >= start && h < end;
+      if (start > end) return h >= start || h < end;
+      return false;
+    }
+
+    // Duplicate Source Village Detector
+    function checkDuplicates() {
+      const lines = document.getElementById('sourceCoords').value.split('\n');
+      const counts = {};
+      lines.forEach(line => {
+        const c = parseCoord(line);
+        if (c) counts[c.str] = (counts[c.str] || 0) + 1;
+      });
+      const dups = Object.entries(counts).filter(([_, cnt]) => cnt > 1);
+      const badge = document.getElementById('dupBadge');
+      const warn = document.getElementById('dupWarning');
+
+      if (dups.length > 0) {
+        badge.textContent = `${dups.length} Duplicate(s)`;
+        badge.className = 'badge danger';
+        warn.style.display = 'block';
+        warn.textContent = `Duplicate Villages Detected: ${dups.map(([coord, cnt]) => `${coord} (${cnt}x)`).join(', ')}`;
+      } else {
+        badge.textContent = '0 Duplicates';
+        badge.className = 'badge';
+        warn.style.display = 'none';
+      }
+    }
+
+    function loadSampleOp() {
+      if (currentPlannerMode === 'edelspam') {
+        document.getElementById('sourceCoords').value = "3 nobles in 501|502\n2 nobles in 503|499\n4 nobles in 498|505";
+        document.getElementById('targetCoords').value = "510|508 3\n512|506 2";
+      } else if (currentPlannerMode === 'cmdgen') {
+        const arr = document.getElementById('arrivalTime').value.replace('T', ' ');
+        document.getElementById('sourceCoords').value = "500|500\n501|502\n502|499\n504|501\n499|503";
+        document.getElementById('targetCoords').value = `510|508,2,${arr}\n512|506,2,${arr}`;
+      } else {
+        document.getElementById('sourceCoords').value = "500|500\n501|502\n502|499\n504|501\n499|503\n501|502";
+        document.getElementById('targetCoords').value = "510|508\n512|506";
+      }
+      checkDuplicates();
+    }
+
+    // Main Planner Solver
+    function generatePlan() {
+      const rawSources = document.getElementById('sourceCoords').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const rawTargets = document.getElementById('targetCoords').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const globalArrival = new Date(document.getElementById('arrivalTime').value);
+      const unitKey = document.getElementById('planUnit').value;
+      const minGap = Number(document.getElementById('minSendGap').value);
+      if (!Number.isFinite(minGap) || minGap < 0) { alert('Minimum gap must be zero or a positive number.'); return; }
+
+      if (isNaN(globalArrival.getTime())) {
+        alert('Please set a valid Target Arrival Time.');
+        return;
+      }
+
+      let sources = [];
+      for (const line of rawSources) {
+        const nobleMatch = line.match(/(\d+)\s*nobles?\s*in\s*(\d{1,3}\|\d{1,3})/i);
+        const c = parseCoord(line);
+        if (nobleMatch) {
+          const count = Number(nobleMatch[1]);
+          const coord = parseCoord(nobleMatch[2]);
+          if (!coord || !Number.isSafeInteger(count) || count < 1 || count > 10000) {
+            alert(`Invalid source quantity or coordinate: ${line}`); return;
+          }
+          for (let i = 0; i < count; i++) sources.push({ ...coord, used: false });
+        } else if (c) {
+          sources.push({ ...c, used: false });
+        } else {
+          alert(`Invalid source line: ${line}`); return;
+        }
+      }
+
+      if (sources.length === 0 || rawTargets.length === 0) {
+        alert('Enter at least one valid source and target coordinate (format: 500|500).');
+        return;
+      }
+
+      const commands = [];
+      const planningWarnings = [];
+      for (const line of rawTargets) {
+        if (!parseCoord(line)) { alert(`Invalid target coordinate: ${line}`); return; }
+      }
+
+      if (currentPlannerMode === 'edelspam') {
+        for (const tLine of rawTargets) {
+          const tCoord = parseCoord(tLine);
+          if (!tCoord) return;
+          const cntMatch = tLine.replace(tCoord.str, '').match(/(\d+)/);
+          const reqNobles = cntMatch ? Number(cntMatch[1]) : 1;
+          if (!Number.isSafeInteger(reqNobles) || reqNobles < 1 || reqNobles > 10000) { alert(`Invalid noble count: ${tLine}`); return; }
+
+          for (let n = 0; n < reqNobles; n++) {
+            const avail = sources.filter(s => !s.used);
+            if (avail.length === 0) { planningWarnings.push(`Not enough source villages for noble requests at ${tCoord.str}.`); break; }
+            avail.sort((a, b) => calcDistance(a, tCoord) - calcDistance(b, tCoord));
+            const chosen = avail[0];
+            chosen.used = true;
+
+            const arrival = new Date(globalArrival.getTime() + n * 250);
+            const travelSec = calcTravelSeconds(chosen, tCoord, 'snob');
+            const launch = new Date(arrival.getTime() - travelSec * 1000);
+            commands.push({
+              type: 'NOBLE',
+              css: 'noble',
+              source: chosen.str,
+              target: tCoord.str,
+              unit: 'snob',
+              travelSec,
+              launch,
+              arrival
+            });
+          }
+        }
+      } else if (currentPlannerMode === 'cmdgen') {
+        for (const tLine of rawTargets) {
+          const parts = tLine.split(',');
+          const tCoord = parseCoord(parts[0]);
+          if (!tCoord) return;
+          const count = parts[1] ? Number(parts[1]) : 1;
+          const arr = parts[2] ? parseLocalDateTime(parts[2]) : globalArrival;
+          if (!Number.isSafeInteger(count) || count < 1 || count > 10000 || !Number.isFinite(arr.getTime())) { alert(`Invalid batch count or arrival time: ${tLine}`); return; }
+
+          for (let i = 0; i < count; i++) {
+            const avail = sources.filter(s => !s.used);
+            if (avail.length === 0) { planningWarnings.push(`Not enough source villages for batch target ${tCoord.str}.`); break; }
+            avail.sort((a, b) => calcDistance(a, tCoord) - calcDistance(b, tCoord));
+            const chosen = avail[0];
+            chosen.used = true;
+
+            const travelSec = calcTravelSeconds(chosen, tCoord, unitKey);
+            const launch = new Date(arr.getTime() - travelSec * 1000);
+            commands.push({
+              type: unitKey === 'snob' ? 'NOBLE' : 'CLEAR',
+              css: unitKey === 'snob' ? 'noble' : 'clear',
+              source: chosen.str,
+              target: tCoord.str,
+              unit: unitKey,
+              travelSec,
+              launch,
+              arrival: arr
+            });
+          }
+        }
+      } else if (currentPlannerMode === 'advcmd') {
+        const clears = Number(document.getElementById('clearsPerTarget').value);
+        const fakes = Number(document.getElementById('fakesPerTarget').value);
+        const fakeUnit = document.getElementById('fakeUnit').value;
+        if (!Number.isSafeInteger(clears) || !Number.isSafeInteger(fakes) || clears < 0 || fakes < 0 || clears + fakes === 0 || clears > 1000 || fakes > 1000) { alert('Clear and fake counts must be whole numbers between 0 and 1000, with at least one command.'); return; }
+
+        for (const tLine of rawTargets) {
+          const tCoord = parseCoord(tLine);
+          if (!tCoord) return;
+
+          for (let c = 0; c < clears; c++) {
+            const avail = sources.filter(s => !s.used);
+            if (!avail.length) { planningWarnings.push(`Not enough source villages for clears at ${tCoord.str}.`); break; }
+            avail.sort((a, b) => calcDistance(a, tCoord) - calcDistance(b, tCoord));
+            const chosen = avail[0];
+            chosen.used = true;
+            const travelSec = calcTravelSeconds(chosen, tCoord, unitKey);
+            commands.push({
+              type: 'CLEAR',
+              css: 'clear',
+              source: chosen.str,
+              target: tCoord.str,
+              unit: unitKey,
+              travelSec,
+              launch: new Date(globalArrival.getTime() - travelSec * 1000),
+              arrival: globalArrival
+            });
+          }
+
+          for (let f = 0; f < fakes; f++) {
+            const avail = sources.filter(s => !s.used);
+            if (!avail.length) { planningWarnings.push(`Not enough source villages for fakes at ${tCoord.str}.`); break; }
+            avail.sort((a, b) => calcDistance(a, tCoord) - calcDistance(b, tCoord));
+            const chosen = avail[0];
+            chosen.used = true;
+            const travelSec = calcTravelSeconds(chosen, tCoord, fakeUnit);
+            commands.push({
+              type: 'FAKE',
+              css: 'fake',
+              source: chosen.str,
+              target: tCoord.str,
+              unit: fakeUnit,
+              travelSec,
+              launch: new Date(globalArrival.getTime() - travelSec * 1000),
+              arrival: globalArrival
+            });
+          }
+        }
+      } else {
+        // Simple & Advanced
+        const order = document.getElementById('assignOrder').value;
+        const earliest = currentPlannerMode === 'advanced' ? new Date(document.getElementById('earliestLaunch').value) : null;
+        if (earliest && !Number.isFinite(earliest.getTime())) { alert('Enter a valid earliest launch time.'); return; }
+
+        for (const tLine of rawTargets) {
+          const tCoord = parseCoord(tLine);
+          if (!tCoord) return;
+          const avail = sources.filter(s => !s.used);
+          if (!avail.length) { planningWarnings.push(`No unused source village remains for ${tCoord.str}.`); continue; }
+
+          avail.sort((a, b) => order === 'furthest'
+            ? calcDistance(b, tCoord) - calcDistance(a, tCoord)
+            : calcDistance(a, tCoord) - calcDistance(b, tCoord));
+
+          let assigned = false;
+          for (const candidate of avail) {
+            const travelSec = calcTravelSeconds(candidate, tCoord, unitKey);
+            const launch = new Date(globalArrival.getTime() - travelSec * 1000);
+            if (earliest && launch < earliest) continue;
+            candidate.used = true;
+            commands.push({
+              type: unitKey === 'snob' ? 'NOBLE' : 'CLEAR',
+              css: unitKey === 'snob' ? 'noble' : 'clear',
+              source: candidate.str,
+              target: tCoord.str,
+              unit: unitKey,
+              travelSec,
+              launch,
+              arrival: globalArrival
+            });
+            assigned = true;
+            break;
+          }
+          if (!assigned) planningWarnings.push(`No source can reach ${tCoord.str} after the earliest-launch constraint.`);
+        }
+      }
+
+      // Never shift computed arrivals to satisfy a local spacing preference.
+      // Report spacing conflicts so the user can review the schedule manually.
+      commands.sort((a, b) => a.launch - b.launch);
+      const gapConflicts = [];
+      for (let i = 1; i < commands.length; i++) {
+        const diffSec = (commands[i].launch - commands[i - 1].launch) / 1000;
+        if (diffSec < minGap) gapConflicts.push({ index: i + 1, actual: diffSec });
+      }
+      generatedCommands = commands;
+      window.scheduleGapConflicts = gapConflicts;
+      window.scheduleWarnings = planningWarnings;
+      renderSchedule();
+      buildBBCode();
+    }
+
+    function renderSchedule() {
+      const card = document.getElementById('scheduleCard');
+      const list = document.getElementById('cmdList');
+      const countEl = document.getElementById('cmdCount');
+      const summary = document.getElementById('stealthSummary');
+      card.style.display = 'block';
+      countEl.textContent = String(generatedCommands.length);
+      list.replaceChildren();
+      if (!generatedCommands.length) {
+        const empty = document.createElement('div');
+        empty.className = 'alert-box warn';
+        empty.textContent = 'No valid commands generated. Check constraints or add more source villages.';
+        list.appendChild(empty);
+        const warnings = window.scheduleWarnings || [];
+        summary.textContent = `No schedule was generated. ${warnings.join(' ')}`;
+        return;
+      }
+
+      const nightHits = document.getElementById('avoidNightBonus').checked
+        ? generatedCommands.filter(c => isNightBonus(c.arrival)).length : 0;
+      const gapConflicts = window.scheduleGapConflicts || [];
+      const planningWarnings = window.scheduleWarnings || [];
+      summary.className = nightHits || gapConflicts.length || planningWarnings.length ? 'alert-box warn' : 'alert-box success';
+      summary.textContent = `${generatedCommands.length} schedule entries. ${gapConflicts.length} minimum-gap conflict(s). ${nightHits} arrival(s) fall inside the configured night-bonus window. ${planningWarnings.length} allocation warning(s). All requested arrival times are preserved; review warnings manually. ${planningWarnings.join(' ')}`;
+
+      const domain = document.getElementById('serverDomain').value;
+      const world = document.getElementById('worldCode').value.trim().toLowerCase();
+      generatedCommands.forEach((cmd, idx) => {
+        const item = document.createElement('div');
+        item.className = `cmd-card ${cmd.css}`;
+        const top = document.createElement('div'); top.className = 'cmd-top';
+        const type = document.createElement('span'); type.className = 'cmd-type';
+        type.textContent = `#${idx + 1} • ${cmd.type} (${String(cmd.unit).toUpperCase()})`;
+        const countdown = document.createElement('span'); countdown.className = 'cmd-countdown';
+        countdown.dataset.launch = String(cmd.launch.getTime()); countdown.textContent = '--:--:--';
+        top.append(type, countdown);
+        const route = document.createElement('div'); route.className = 'cmd-route'; route.textContent = `${cmd.source} → ${cmd.target}`;
+        const meta = document.createElement('div'); meta.className = 'cmd-meta';
+        [['Send: ', formatTimestamp(cmd.launch)], ['Land: ', formatTimestamp(cmd.arrival)], ['Dur: ', formatDuration(cmd.travelSec)]].forEach(([label, value]) => {
+          const span = document.createElement('span'); const strong = document.createElement('strong');
+          strong.textContent = label; span.append(strong, document.createTextNode(value)); meta.appendChild(span);
+        });
+        const actions = document.createElement('div'); actions.className = 'cmd-actions';
+        const copy = document.createElement('button'); copy.className = 'btn btn-secondary btn-sm'; copy.textContent = 'Copy Target';
+        copy.addEventListener('click', () => navigator.clipboard.writeText(cmd.target));
+        const [tx, ty] = cmd.target.split('|');
+        const link = document.createElement('a'); link.className = 'btn btn-secondary btn-sm';
+        link.style.textDecoration = 'none'; link.target = '_blank'; link.rel = 'noopener';
+        link.href = `https://${encodeURIComponent(world)}.${domain}/game.php?screen=place&x=${encodeURIComponent(tx)}&y=${encodeURIComponent(ty)}`;
+        link.textContent = 'Open Rally Point ↗';
+        actions.append(copy, link);
+        item.append(top, route, meta, actions); list.appendChild(item);
+      });
+    }
+
+    // Live Countdown Updater for Generated Queue
+    setInterval(() => {
+      const now = Date.now();
+      document.querySelectorAll('.cmd-countdown').forEach(el => {
+        const launchMs = parseInt(el.getAttribute('data-launch'), 10);
+        const diff = Math.floor((launchMs - now) / 1000);
+        if (diff > 0) {
+          el.textContent = 'T-' + formatDuration(diff);
+          el.style.color = diff <= 60 ? '#f59e0b' : '#10b981';
+        } else if (diff >= -10) {
+          el.textContent = 'SEND NOW!';
+          el.style.color = '#ef4444';
+        } else {
+          el.textContent = 'MISSED';
+          el.style.color = '#94a3b8';
+        }
+      });
+    }, 500);
+
+    // BB-Code & Export
+    function buildBBCode() {
+      let bb = `[table]\n[**]#[||]Type[||]Origin[||]Target[||]Unit[||]Launch Time[||]Arrival[/**]\n`;
+      generatedCommands.forEach((c, i) => {
+        bb += `[*]${i + 1}[|]${c.type}[|][coord]${c.source}[/coord][|][coord]${c.target}[/coord][|][unit]${c.unit}[/unit][|][b]${formatTimestamp(c.launch)}[/b][|]${formatTimestamp(c.arrival)}[/*]\n`;
+      });
+      bb += `[/table]`;
+      document.getElementById('bbExportOutput').value = bb;
+    }
+
+    function copyBBCode() {
+      if (!generatedCommands.length) return alert('Generate a schedule first.');
+      buildBBCode();
+      navigator.clipboard.writeText(document.getElementById('bbExportOutput').value);
+      alert('Tribal Wars BB-Code table copied to clipboard!');
+    }
+
+    function exportPlainText() {
+      if (!generatedCommands.length) return alert('Generate a schedule first.');
+      const txt = generatedCommands.map((c, i) =>
+        `${i + 1}. [${c.type}] ${c.source} -> ${c.target} (${c.unit}) | SEND: ${formatTimestamp(c.launch)} | LAND: ${formatTimestamp(c.arrival)}`
+      ).join('\n');
+      navigator.clipboard.writeText(txt);
+      alert('Plain-text schedule copied!');
+    }
+
+    // AI WAR ROOM 1: MULTI-WAVE WALL DEGRADATION SIMULATOR
+    function runWallSimulation() {
+      const waves = parseInt(document.getElementById('simWaves').value, 10) || 1;
+      let wall = parseInt(document.getElementById('simWall').value, 10) || 0;
+      let spear = parseInt(document.getElementById('simSpear').value, 10) || 0;
+      let sword = parseInt(document.getElementById('simSword').value, 10) || 0;
+      let heavy = parseInt(document.getElementById('simHeavy').value, 10) || 0;
+      const nukeType = document.getElementById('simNukeType').value;
+      const nbMult = parseFloat(document.getElementById('simNightBonus').value) || 1;
+
+      const templates = {
+        standard: { offPower: 6500 * 40 + 3000 * 130, rams: 300 },
+        wallbreaker: { offPower: 5500 * 40 + 2800 * 130, rams: 500 },
+        heavyoff: { offPower: 7500 * 40 + 3200 * 130, rams: 250 }
+      };
+      const nuke = templates[nukeType];
+
+      let html = `<table><thead><tr><th>Wave</th><th>Wall Start→End</th><th>Def Remaining</th><th>Status</th></tr></thead><tbody>`;
+      let breachWave = null;
+
+      for (let w = 1; w <= waves; w++) {
+        const startWall = wall;
+        // Pre-combat ram wall drop approximation
+        const defPowerBefore = (spear * 30 + sword * 40 + heavy * 150) * Math.pow(1.037, wall) * nbMult;
+        const ramEffectiveness = Math.min(1, (nuke.offPower / Math.max(1, defPowerBefore)) * 1.35);
+        const wallDrop = Math.min(wall, Math.max(1, Math.round((nuke.rams / 18) * ramEffectiveness)));
+        const effectiveBattleWall = Math.max(0, wall - Math.ceil(wallDrop / 2));
+
+        const defPower = Math.max(1, (spear * 30 + sword * 40 + heavy * 150) * Math.pow(1.037, effectiveBattleWall) * nbMult);
+        const ratio = nuke.offPower / defPower;
+
+        if (ratio >= 1) {
+          spear = 0; sword = 0; heavy = 0;
+          wall = Math.max(0, wall - wallDrop * 2);
+          if (!breachWave) breachWave = w;
+        } else {
+          const lossFraction = Math.pow(ratio, 1.5);
+          spear = Math.max(0, Math.round(spear * (1 - lossFraction)));
+          sword = Math.max(0, Math.round(sword * (1 - lossFraction)));
+          heavy = Math.max(0, Math.round(heavy * (1 - lossFraction)));
+          wall = Math.max(0, wall - wallDrop);
+        }
+
+        const totalTroops = spear + sword + heavy;
+        html += `<tr>
+          <td><strong>#${w}</strong></td>
+          <td>Lv.${startWall} ➔ Lv.${wall}</td>
+          <td>${totalTroops.toLocaleString()}</td>
+          <td>${totalTroops === 0 ? '<span class="badge success">CLEARED</span>' : '<span class="badge danger">HOLDING</span>'}</td>
+        </tr>`;
+      }
+      html += `</tbody></table>`;
+
+      const summary = `<div class="alert-box warn"><strong>Illustrative estimate only:</strong> This legacy simulator uses hard-coded unit powers and approximate wall/loss equations; it is not an authoritative Tribal Wars combat calculator. ${breachWave ? `Its simplified model reaches zero defence on wave ${breachWave}.` : `Its simplified model leaves ${spear + sword + heavy} defenders after ${waves} waves.`}</div>`;
+
+      document.getElementById('simResults').innerHTML = summary + html;
+    }
+
+    // AI WAR ROOM 2: TARGET CLUSTER & CENTRALITY SCORER
+    function scoreTargetClusters() {
+      const lines = document.getElementById('clusterInput').value.split('\n');
+      const coords = [];
+      lines.forEach(l => {
+        const c = parseCoord(l);
+        if (c && !coords.some(x => x.str === c.str)) coords.push(c);
+      });
+
+      if (coords.length < 2) {
+        alert('Enter at least 2 distinct coordinates to analyze cluster centrality.');
+        return;
+      }
+
+      const scored = coords.map(c => {
+        let supportScore = 0;
+        let neighborsWithin5 = 0;
+        coords.forEach(other => {
+          if (c.str === other.str) return;
+          const d = calcDistance(c, other);
+          supportScore += 1 / Math.max(0.5, d);
+          if (d <= 5) neighborsWithin5++;
+        });
+        return { ...c, supportScore, neighborsWithin5 };
+      });
+
+      scored.sort((a, b) => b.supportScore - a.supportScore);
+      const maxScore = scored[0].supportScore || 1;
+
+      let html = `<div class="alert-box warn">Distance-based clustering heuristic only; it does not measure actual support capacity or strategic value.</div><table><thead><tr><th>Rank</th><th>Coord</th><th>Neighbors (&le;5f)</th><th>Leverage</th></tr></thead><tbody>`;
+      scored.forEach((item, idx) => {
+        const pct = Math.round((item.supportScore / maxScore) * 100);
+        html += `<tr>
+          <td>#${idx + 1}</td>
+          <td><strong>${item.str}</strong></td>
+          <td>${item.neighborsWithin5}</td>
+          <td><span class="badge ${idx === 0 ? 'success' : ''}">${pct}% Anchor</span></td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('clusterResults').innerHTML = html;
+    }
+
+    // AI WAR ROOM 3: SNIPE & BACKTIME CALCULATOR
+    function calcBacktimeAndSnipe() {
+      const orig = parseCoord(document.getElementById('btOrigin').value);
+      const targ = parseCoord(document.getElementById('btTarget').value);
+      const unit = document.getElementById('btEnemyUnit').value;
+      const impact = new Date(document.getElementById('btImpactTime').value);
+
+      if (!orig || !targ || isNaN(impact.getTime())) {
+        alert('Enter valid coordinates and impact timestamp.');
+        return;
+      }
+
+      const travelSec = calcTravelSeconds(orig, targ, unit);
+      const enemyLaunch = new Date(impact.getTime() - travelSec * 1000);
+      const enemyReturn = new Date(impact.getTime() + travelSec * 1000);
+
+      document.getElementById('btResults').innerHTML = `
+        <div class="alert-box">
+          <strong>Distance:</strong> ${calcDistance(orig, targ).toFixed(2)} fields (${formatDuration(travelSec)})<br>
+          <strong>Enemy Sent At:</strong> ${formatTimestamp(enemyLaunch)}<br>
+          <strong>Estimated return (same travel duration):</strong> <span style="color:#f59e0b;font-weight:700;">${formatTimestamp(enemyReturn)}</span><br>
+          <strong>Note:</strong> The return estimate assumes a symmetric return trip. The midpoint is not a valid cancellation window; actual game timing and command details must be verified in-game.
+        </div>
+      `;
+    }
+
+    // UTILITIES: COORD EXTRACTOR
+    function extractCoords() {
+      const raw = document.getElementById('rawExtractText').value;
+      const matches = raw.match(/(?<![\d+\-])\d{1,3}\|\d{1,3}(?!\d)/g) || [];
+      const unique = [...new Set(matches.filter(value => parseCoord(value)))];
+      document.getElementById('extractedOutput').value = unique.join('\n');
+    }
+
+    function sendExtractedToTargets() {
+      const out = document.getElementById('extractedOutput').value;
+      if (!out) return;
+      document.getElementById('targetCoords').value = out;
+      alert('Copied extracted coords to Targets!');
+    }
+
+    function sendExtractedToSources() {
+      const out = document.getElementById('extractedOutput').value;
+      if (!out) return;
+      document.getElementById('sourceCoords').value = out;
+      checkDuplicates();
+      alert('Copied extracted coords to Sources!');
+    }
+  </script>
+</body>
+</html>
